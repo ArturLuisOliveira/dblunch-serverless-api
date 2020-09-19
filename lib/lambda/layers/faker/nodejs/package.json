@@ -1,0 +1,6 @@
+{
+    "name": "faker-layer",
+    "dependencies": {
+        "faker": "5.1.0"
+    }
+}

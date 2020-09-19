@@ -1,15 +1,24 @@
+*.*
+!*.css
+!*.js
+!*.json
+!*.jsx
+!*.less
+!*.md
+!*.mdx
+!*.ts
+!*.tsx
+!*.yml
+build/*
+
 *.js
 !jest.config.js
 *.d.ts
 node_modules
-yarn.lock
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out
-.env
 
 # Parcel default cache directory
 .parcel-cache
-
-# vscode
-.vscode

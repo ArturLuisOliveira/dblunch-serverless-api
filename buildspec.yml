@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+    install:
+        commands:
+            - echo Installing CDK...
+            - npm install -g aws-cdk
+    pre_build:
+        commands:
+            - echo Building Node Modules...
+            - npm install
+            - echo Building Typescript...
+            - npm run build
+            - echo Building CloudFormation template...
+            - cdk synth
+
+    build:
+        commands:
+            - echo Deployment started on `date`
+            - echo Deploying with CDK
+            - cdk deploy --require-approval never
+    post_build:
+        commands:
+            - echo Deployment completed on `date`

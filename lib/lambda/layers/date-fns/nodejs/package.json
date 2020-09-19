@@ -1,0 +1,8 @@
+{
+    "name": "data-fns-layer",
+    "dependencies": {
+        "@types/date-fns": "2.6.0",
+        "date-fns": "2.16.1",
+        "date-fns-tz": "1.0.10"
+    }
+}
