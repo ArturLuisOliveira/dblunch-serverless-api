@@ -9,6 +9,8 @@ interface Functions {
     listRestaurants: lambda.Function;
     getMessage: lambda.Function;
     seed: lambda.Function;
+    login: lambda.Function;
+    createVote: lambda.Function;
 }
 
 const Lambda = (
@@ -45,6 +47,16 @@ const Lambda = (
     });
     restaurantsTable.grantReadData(listRestaurants);
 
+    const login = new lambda.Function(scope, 'login', {
+        code: new lambda.AssetCode(path.join('lib', 'lambda', 'user')),
+        handler: 'index.login',
+        runtime: lambda.Runtime.NODEJS_10_X,
+        environment: {
+            USERS_TABLE_NAME: usersTable.tableName
+        }
+    });
+    usersTable.grantReadWriteData(login);
+
     const getMessage = new lambda.Function(scope, 'getMessage', {
         code: new lambda.AssetCode(path.join('lib', 'lambda', 'message')),
         handler: 'index.get',
@@ -55,6 +67,17 @@ const Lambda = (
         }
     });
 
-    return { listRestaurants, getMessage, seed };
+    const createVote = new lambda.Function(scope, 'createVote', {
+        code: new lambda.AssetCode(path.join('lib', 'lambda', 'vote')),
+        handler: 'index.create',
+        runtime: lambda.Runtime.NODEJS_10_X,
+        layers: [datefns],
+        environment: {
+            VOTES_TABLE_NAME: votesTable.tableName
+        }
+    });
+    votesTable.grantWriteData(createVote);
+
+    return { listRestaurants, getMessage, seed, login, createVote };
 };
 export default Lambda;

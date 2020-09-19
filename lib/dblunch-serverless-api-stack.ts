@@ -11,9 +11,9 @@ export class DblunchServerlessApiStack extends cdk.Stack {
         const { restaurants, users, votes } = Dynamodb(this);
 
         //controllers
-        const { listRestaurants, getMessage, seed } = Lambda(this, votes, restaurants, users);
+        const { listRestaurants, getMessage, seed, login, createVote } = Lambda(this, votes, restaurants, users);
 
         //routes
-        ApiGateway(this, getMessage, seed, listRestaurants);
+        ApiGateway(this, getMessage, seed, listRestaurants, login, createVote);
     }
 }

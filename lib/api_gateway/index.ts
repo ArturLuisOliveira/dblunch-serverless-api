@@ -7,10 +7,12 @@ const ApiGateway = (
     scope: cdk.Stack,
     getMessage: lambda.Function,
     seed: lambda.Function,
-    listRestaurants: lambda.Function
+    listRestaurants: lambda.Function,
+    login: lambda.Function,
+    createVote: lambda.Function
 ) => {
     const api = new apigateway.RestApi(scope, makeId('lexicovid19'), {
-        restApiName: 'Lexicovid19',
+        restApiName: 'Dblunch',
         defaultCorsPreflightOptions: {
             allowOrigins: apigateway.Cors.ALL_ORIGINS
         }
@@ -19,7 +21,9 @@ const ApiGateway = (
     const integrations = {
         seed: new apigateway.LambdaIntegration(seed),
         getMessage: new apigateway.LambdaIntegration(getMessage),
-        listRestaurants: new apigateway.LambdaIntegration(listRestaurants)
+        listRestaurants: new apigateway.LambdaIntegration(listRestaurants),
+        login: new apigateway.LambdaIntegration(login),
+        createVote: new apigateway.LambdaIntegration(createVote)
     };
 
     //seed
@@ -35,6 +39,15 @@ const ApiGateway = (
     //restaurants
     const restaurantResource = api.root.addResource('restaurants');
     restaurantResource.addMethod('GET', integrations.listRestaurants);
+
+    //vote
+    const voteResource = api.root.addResource('vote');
+    voteResource.addMethod('POST', integrations.createVote);
+
+    //users
+    const usersResource = api.root.addResource('users');
+    const loginResource = usersResource.addResource('login');
+    loginResource.addMethod('POST', integrations.login);
 };
 
 export default ApiGateway;
