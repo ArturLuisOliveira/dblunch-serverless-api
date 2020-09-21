@@ -17,6 +17,7 @@ const Dynamodb = (scope: cdk.Stack): Tables => {
 
     const votes: dynamodb.Table = new dynamodb.Table(scope, 'votes', {
         partitionKey: { name: 'email', type: dynamodb.AttributeType.STRING },
+        sortKey: { name: 'date', type: dynamodb.AttributeType.STRING },
         tableName: makeId('votes'),
         removalPolicy: getRemovalPolicy()
     });

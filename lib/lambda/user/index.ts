@@ -23,9 +23,10 @@ export const login = async (event: any) => {
             headers: { 'Access-Control-Allow-Origin': '*' }
         };
 
+    //MOCKED RESPONSE, SHOULD SEND TOKEN, NOT EMAIL
     return {
         statusCode: 201,
-        body: JSON.stringify({ msg: 'received', token: '123456789' }),
+        body: JSON.stringify({ msg: 'received', token: email }),
         headers: { 'Access-Control-Allow-Origin': '*' }
     };
 };
