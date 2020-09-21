@@ -4,11 +4,9 @@ const db = new AWS.DynamoDB.DocumentClient();
 const USERS_TABLE_NAME: string = process.env.USERS_TABLE_NAME || '';
 
 export const login = async (event: any) => {
-    console.log('the event is', event);
     const { email, password } = JSON.parse(event.body);
-    console.log('the email is', email);
     const user = (await db.get({ TableName: USERS_TABLE_NAME, Key: { email } }).promise()).Item;
-    console.log('user', user);
+
     if (!user)
         return {
             statusCode: 401,

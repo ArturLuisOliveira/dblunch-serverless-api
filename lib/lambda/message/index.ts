@@ -1,33 +1,28 @@
-import { zonedTimeToUtc } from 'date-fns-tz';
-import { isAfter, isEqual, format } from 'date-fns';
-import * as AWS from 'aws-sdk';
-import * as _ from 'lodash';
-const db = new AWS.DynamoDB.DocumentClient();
+import Database, * as queries from './queries';
+import { votesAreClosed, todayRestaurant, userDidVote } from './handlers';
+
 const VOTES_TABLE_NAME = process.env.VOTES_TABLE_NAME || '';
+const db = new Database(VOTES_TABLE_NAME);
+const responses = {
+    closed: (restaurant: Restaurant) => ({
+        statusCode: 200,
+        body: JSON.stringify({ msg: `Hoje o almoço será no ${restaurant.name}`, enabled: false })
+    }),
+    soon: { statusCode: 200, body: JSON.stringify({ msg: 'Em breve será decidido o restaurante.', enabled: false }) },
+    vote: { msg: 'Vote para decidir o restaurante', enabled: true },
+    noVotes: { msg: 'Não houveram votos para o restaurante de hoje', enabled: false }
+};
 
 export const get = async (event: any = {}) => {
     const { email } = event.queryStringParameters;
 
-    //decided
-    const votesCloseAt = zonedTimeToUtc(new Date(), 'Etc/GMT+3');
-    if (isAfter(new Date(), votesCloseAt) || isEqual(new Date(), votesCloseAt)) {
+    if (votesAreClosed()) {
+        const restaurant = await todayRestaurant(db);
+        if (!restaurant) return responses.noVotes;
+        return responses.closed(restaurant);
     }
 
-    //already voted
-    const dayVotes = await db
-        .query({
-            TableName: VOTES_TABLE_NAME,
-            IndexName: 'date',
-            KeyConditionExpression: '#date = :currentDate',
-            ExpressionAttributeNames: {
-                '#date': 'date'
-            },
-            ExpressionAttributeValues: {
-                ':currentDate': format(new Date(), 'MM/DD/YYYY')
-            }
-        })
-        .promise();
+    const voted = await userDidVote(db, email);
 
-    const mostVoted = _.countBy(dayVotes, 'restaurant');
-    return { statusCode: 200, body: JSON.stringify({ mostVoted }) };
+    return voted ? responses.soon : responses.vote;
 };

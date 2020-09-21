@@ -16,7 +16,7 @@ export const create = async (event: any) => {
             body: JSON.stringify({ msg: 'bad request' }),
             headers: { 'Access-Control-Allow-Origin': '*' }
         };
-    const vote: Vote = { date: format(new Date(), 'mm/dd/yyyy'), email: token, restaurant };
+    const vote: Vote = { date: new Date().toLocaleDateString(), email: token, restaurant };
     const query = await db.put({ TableName: VOTES_TABLE_NAME, Item: vote }).promise();
     return {
         statusCode: 201,
@@ -38,7 +38,7 @@ export const available = async (event: any) => {
             headers: { 'Access-Control-Allow-Origin': '*' }
         };
     const vote = await db
-        .get({ TableName: VOTES_TABLE_NAME, Key: { email, date: format(new Date(), 'mm/dd/yyyy') } })
+        .get({ TableName: VOTES_TABLE_NAME, Key: { email, date: new Date().toLocaleDateString() } })
         .promise();
     if (!vote.Item)
         return {
