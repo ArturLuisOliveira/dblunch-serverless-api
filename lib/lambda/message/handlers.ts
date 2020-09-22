@@ -35,21 +35,15 @@ const _mostVotedRestaurants = (todayVotes: any): Array<string> => {
     return mostVotedRestaurants;
 };
 
-/**
- *
- * There are no business rule specification about what happens when the votes are even.
- * Currently it gets a random value depending on the most voted restaurants.
- *
- */
-export const todayRestaurant = async (db: Database): Promise<any> => {
+export const todayRestaurants = async (db: Database): Promise<Array<any>> => {
     const todayVotes = await db.listTodayVotes();
     //no votes
-    if (!todayVotes.length) return null;
+    if (!todayVotes.length) return [];
 
     const mostVotedRestaurants = _mostVotedRestaurants(todayVotes);
     //one restaurant
-    if (mostVotedRestaurants.length === 1) return mostVotedRestaurants[0];
+    if (mostVotedRestaurants.length === 1) return mostVotedRestaurants;
 
     //many restaurants
-    return mostVotedRestaurants[_.random(0, mostVotedRestaurants.length - 1)];
+    return mostVotedRestaurants;
 };

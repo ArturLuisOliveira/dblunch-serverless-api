@@ -1,4 +1,4 @@
-import { votesAreClosed, todayRestaurant, userDidVote } from './handlers';
+import { votesAreClosed, todayRestaurants, userDidVote } from './handlers';
 import { isAfter, isEqual, addDays } from 'date-fns';
 import Database from './queries';
 import { Vote } from '../seed/factories';
@@ -28,7 +28,11 @@ describe('userDidVote function', () => {
                 return [];
             }
             async findUserVote(email: string): Promise<any> {
-                return { email: 'user@email.com', restaurant: 'Restaurant A', date: new Date().toLocaleDateString() };
+                return {
+                    email: 'user@email.com',
+                    restaurant: 'Restaurant A',
+                    date: new Date().toLocaleDateString()
+                };
             }
         }
         const db = new MockedDb();
@@ -81,8 +85,8 @@ describe('todayRestaurant function', () => {
             }
         }
         const db = new MockedDb();
-        const restaurant = await todayRestaurant(db);
-        expect(restaurant).toEqual('restaurant A');
+        const restaurant = await todayRestaurants(db);
+        expect(restaurant[0]).toEqual('restaurant A');
     });
 
     test('it should return one of the most voted restaurants', async () => {
@@ -128,8 +132,9 @@ describe('todayRestaurant function', () => {
             }
         }
         const db = new MockedDb();
-        const restaurant = await todayRestaurant(db);
-        expect(_.some(['restaurant A', 'restaurant B'], restaurant.name)).toEqual(true);
+        const restaurant = await todayRestaurants(db);
+        expect(restaurant.includes('restaurant A')).toEqual(true);
+        expect(restaurant.includes('restaurant B')).toEqual(true);
     });
     test('it should return null', async () => {
         class MockedDb extends Database {
@@ -142,7 +147,7 @@ describe('todayRestaurant function', () => {
             }
         }
         const db = new MockedDb();
-        const restaurant = await todayRestaurant(db);
-        expect(restaurant).toEqual(null);
+        const restaurant = await todayRestaurants(db);
+        expect(restaurant).toEqual([]);
     });
 });

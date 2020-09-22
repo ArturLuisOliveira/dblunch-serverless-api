@@ -32,7 +32,7 @@ class Database {
             .get({ TableName: this.VOTES_TABLE_NAME, Key: { email, date: new Date().toLocaleDateString() } })
             .promise();
 
-        return vote.Item;
+        return vote.Item || null;
     }
 }
 

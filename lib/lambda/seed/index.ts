@@ -17,6 +17,11 @@ export const seed = async (event: any) => {
         return values;
     };
 
+    //test user
+    await db
+        .put({ TableName: USERS_TABLE_NAME, Item: factories.User({ email: 'test@email.com', password: 'test123' }) })
+        .promise();
+
     const restaurants: Array<Restaurant> = await _seedTable(RESTAURANTS_TABLE_NAME, factories.Restaurant, 5);
     const users: Array<User> = await _seedTable(USERS_TABLE_NAME, factories.User, 5);
     const votes: Array<Vote> = await _seedTable(VOTES_TABLE_NAME, factories.Vote, 10, {

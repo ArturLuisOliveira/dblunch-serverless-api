@@ -9,10 +9,9 @@ const ApiGateway = (
     seed: lambda.Function,
     listRestaurants: lambda.Function,
     login: lambda.Function,
-    createVote: lambda.Function,
-    votingIsAvailable: lambda.Function
+    createVote: lambda.Function
 ) => {
-    const api = new apigateway.RestApi(scope, makeId('lexicovid19'), {
+    const api = new apigateway.RestApi(scope, makeId('dblunch'), {
         restApiName: 'Dblunch',
         defaultCorsPreflightOptions: {
             allowOrigins: apigateway.Cors.ALL_ORIGINS
@@ -24,8 +23,7 @@ const ApiGateway = (
         getMessage: new apigateway.LambdaIntegration(getMessage),
         listRestaurants: new apigateway.LambdaIntegration(listRestaurants),
         login: new apigateway.LambdaIntegration(login),
-        createVote: new apigateway.LambdaIntegration(createVote),
-        votingIsAvailable: new apigateway.LambdaIntegration(votingIsAvailable)
+        createVote: new apigateway.LambdaIntegration(createVote)
     };
 
     //seed
@@ -45,7 +43,6 @@ const ApiGateway = (
     //vote
     const voteResource = api.root.addResource('vote');
     voteResource.addMethod('POST', integrations.createVote);
-    voteResource.addMethod('GET', integrations.votingIsAvailable);
 
     //users
     const usersResource = api.root.addResource('users');

@@ -24,31 +24,3 @@ export const create = async (event: any) => {
         headers: { 'Access-Control-Allow-Origin': '*' }
     };
 };
-
-/**
- *
- * @todo should find by header token, not email.
- */
-export const available = async (event: any) => {
-    const { email } = event.queryStringParameters;
-    if (!email)
-        return {
-            statusCode: 401,
-            body: JSON.stringify({ msg: 'bad request' }),
-            headers: { 'Access-Control-Allow-Origin': '*' }
-        };
-    const vote = await db
-        .get({ TableName: VOTES_TABLE_NAME, Key: { email, date: new Date().toLocaleDateString() } })
-        .promise();
-    if (!vote.Item)
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ available: false }),
-            headers: { 'Access-Control-Allow-Origin': '*' }
-        };
-    return {
-        statusCode: 200,
-        body: JSON.stringify({ available: true }),
-        headers: { 'Access-Control-Allow-Origin': '*' }
-    };
-};

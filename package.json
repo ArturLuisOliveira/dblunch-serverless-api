@@ -43,5 +43,6 @@
         "faker": "5.1.0",
         "lodash": "4.17.20",
         "source-map-support": "0.5.16"
-    }
+    },
+    "license": "MIT"
 }

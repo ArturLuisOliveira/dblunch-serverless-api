@@ -11,7 +11,6 @@ interface Functions {
     seed: lambda.Function;
     login: lambda.Function;
     createVote: lambda.Function;
-    votingIsAvailable: lambda.Function;
 }
 
 const Lambda = (
@@ -65,8 +64,10 @@ const Lambda = (
         layers: [datefns, lodash],
         environment: {
             VOTES_TABLE_NAME: votesTable.tableName
-        }
+        },
+        timeout: cdk.Duration.seconds(30)
     });
+    votesTable.grantReadData(getMessage);
 
     const createVote = new lambda.Function(scope, 'createVote', {
         code: new lambda.AssetCode(path.join('lib', 'lambda', 'vote')),
@@ -79,17 +80,6 @@ const Lambda = (
     });
     votesTable.grantWriteData(createVote);
 
-    const votingIsAvailable = new lambda.Function(scope, 'votingIsAvailable', {
-        code: new lambda.AssetCode(path.join('lib', 'lambda', 'vote')),
-        handler: 'index.available',
-        runtime: lambda.Runtime.NODEJS_10_X,
-        layers: [datefns],
-        environment: {
-            VOTES_TABLE_NAME: votesTable.tableName
-        }
-    });
-    votesTable.grantReadData(votingIsAvailable);
-
-    return { listRestaurants, getMessage, seed, login, createVote, votingIsAvailable };
+    return { listRestaurants, getMessage, seed, login, createVote };
 };
 export default Lambda;
