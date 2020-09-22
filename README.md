@@ -55,7 +55,7 @@ yarn lint:fix
 -   finish authentication with Cognito.
 -   use api gateway route validation instead of Lambda proxy integration.
 -   implement CI/CD.
--   centralize the logic into layers for reusing porposes.
+-   centralize the logic into layers for reusing purposes.
 -   add time limit and billing controll specifications.
 -   improve code by adding more abstraction layers(dependency inversion).
 -   separate TypeScript build form files.
@@ -63,3 +63,4 @@ yarn lint:fix
 -   decide business logic related to vote draw.
 -   maybe add sns/socket to send push notification
 -   implement add restaurant
+-   fix typescript any types to proper types
