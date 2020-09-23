@@ -1,14 +1,14 @@
-# DBeat serverless api
+# DBeat serverless API
 
-This is an serverless api demo project using AWS Cloud Development Kit, made for portfolio reasons. CDK allows to easilly deploy AWS infrastructure as code, transforming the code into a AWS CloudFormation templates.
+This is a serverless API made for portfolio reasons using AWS Cloud Development Kit. The cloud development kit, or just CDK, is tool that allows easy deployment of AWS infrastructure as code, internally transforming the code into AWS CloudFormation templates.
+
+The application main file to understand this API logic is `lib/dblunch-serverless-api-stack.ts`. It calls all the other files.
 
 ## Setup
 
-To run CDK commands you need to have it installed in your machine. You also need your AWS credentials adjusted. You can check the get started CDK guide https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html.
+To run CDK commands you need to have it installed in your machine. You also need your AWS credentials adjusted locally. You can check the get started CDK guide https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html.
 
 -   `npm install -g aws-cdk` install CDK globaly
-
-The application main file is `lib/dblunch-serverless-api-stack.ts`.
 
 ## Environment Variables
 
@@ -18,12 +18,14 @@ Specify the name of the environment that will be builded using the `cdk deploy` 
 -   `ENVIRONMENT=DEVELOPMENT|STAGING|PRODUCTION`
 
 ## Lambda layers
-For Lambdas to use `node_modules` it needs to have the code injected, differently from non-serverless Node based applications where you only need to import the module. This is the purpouse of Lambda Layers, any `node_module` not native from the AWS should be imported manually. 
-On deploy each Lambda layer `package.json` needs to be installed, otherwise the Lambdas won't find the modules.
+
+For Lambda functions to use `node_modules` it needs to have the code injected, it behaves differently from non-serverless Node based applications where you just need to import the module. This is one of the uses of Lambda Layers, it allows the reuse of code between Lambdas. Any `node_module` that is not default from AWS should be imported manually.
+
+In the deployment, each Lambda layer must have it's own `package.json` build, otherwise the Lambdas won't find the modules. Is also important that it keeps the `my_layer/nodejs` folder structure, otherwise AWS won't be able to read the layer.
 
 ## App Credentials
 
-Credential for access after seeding.
+After seeding the default credential is:
 
 -   `email` test@email.com
 -   `password` test123
@@ -43,7 +45,7 @@ Credential for access after seeding.
 
 ## Seeding and DB
 
-You can seed your DynamoDB table calling the `/seed` endpoint with a `POST` method. This endpoint is not exposed on de `PRODUCTION` environment.
+You can seed the DynamoDB table calling the `/seed` endpoint with a `POST` method. This endpoint is not exposed on de `PRODUCTION` environment.
 
 The table removal policy behaves diferently when on `PRODUCTION` environment. `RETAIN` on production and `DESTROY` on other environments. You can check it on https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_core.RemovalPolicy.html
 
@@ -61,13 +63,14 @@ yarn lint:fix
 
 ## Todo's
 
+There is unfinished things on this project, here is some of them and also some sugestions.
+
 # Business rules
 
 -   decide business logic related to vote draw.
 -   finish the "disable restaurant voted in the week" functionality.
 -   maybe add sns/socket to send push notification
 -   implement add restaurant functionality
-
 
 # Infrastructure
 
@@ -77,11 +80,10 @@ yarn lint:fix
 -   implement CI/CD.
 -   add time limit and billing controll specifications.
 
-
 # Codequality
+
 -   separate TypeScript build form files.
 -   centralize the logic into Lambda layers for reusing purposes.
-
 
 # Fix
 
